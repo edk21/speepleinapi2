@@ -52,7 +52,8 @@ recordRoutes.route("/record/:name").get(function(req, res){
 // create a new record
 recordRoutes.route("/record/add").post(function(req, res){
     let db_connect = dbo.getDB();
-    let totalAmount = req.body.balance + totalAmount;
+    let totalAmount = 0;
+    totalAmount = req.body.balance + totalAmount;
     let newObj = {
       surname: req.body.surname,
       name: req.body.name,
