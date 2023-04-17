@@ -49,8 +49,8 @@ recordRoutes.route("/record/stats").get(async function(req, res){
 // get a singl record by ID
 recordRoutes.route("/record/:id").get(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectId();
-    let myQuery = { _id: ObjectId( req.params.id ) };
+    let ObjectID = new ObjectId();
+    let myQuery = { _id: ObjectID( req.params.id ) };
     try {
         const record = await db_connect
           .collection("records")
@@ -142,8 +142,8 @@ recordRoutes.route("/record/stats/add").post(async function(req, res){
 // update a record
 recordRoutes.route("/update/:id").put(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectId();
-    let myQuery = { _id:ObjectId( req.params.id ) };
+    let ObjectID = new ObjectId();
+    let myQuery = { _id:ObjectID( req.params.id ) };
     let newValues = {
       $set: {
         surname: req.body.surname,
@@ -189,8 +189,8 @@ recordRoutes.route("/update/:id").put(async function(req, res){
 // delete a record
 recordRoutes.route("/:id").delete(async function(req, res) {
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectId();
-    let myQuery = { _id: ObjectId( req.params.id ) };
+    let ObjectID = new ObjectId();
+    let myQuery = { _id: ObjectID( req.params.id ) };
     try {
       const record = await db_connect
         .collection("records")
@@ -205,8 +205,8 @@ recordRoutes.route("/:id").delete(async function(req, res) {
 // delete a daily registration
 recordRoutes.route('/record/deleteAStat/:id').delete(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectId();
-    let myQuery = { _id: ObjectId( req.params.id )};
+    let ObjectID = new ObjectId();
+    let myQuery = { _id: ObjectID( req.params.id )};
     try {
       const record = await db_connect.collection("statDatas").deleteOne(myQuery)
       res.json(record)
