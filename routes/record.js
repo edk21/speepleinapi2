@@ -5,52 +5,77 @@ const ObjectId = require("mongodb").ObjectId;
 const data = require("../data")
 
 //get All records
-recordRoutes.route("/record").get(function(req, res){
+// recordRoutes.route("/record").get(function(req, res){
+//     let db_connect = dbo.getDB("records");
+//     db_connect
+//         .collection("records")
+//         .find({})
+//         .toArray(function(err, result) {
+//             if(err) throw err
+//             res.json(result)
+//         })
+// })
+recordRoutes.route("/record").get(async function (req, response) {
     let db_connect = dbo.getDB("records");
-    db_connect
+  
+    try {
+      const records = await db_connect
         .collection("records")
         .find({})
-        .toArray(function(err, result) {
-            if(err) throw err
-            res.json(result)
-        })
-})
+        .toArray();
+      response.json(records);
+    } catch (error) {
+      console.log("An error occurred pulling the records. " + error);
+    }
+  
+  });
 
 //get all statistics records
-recordRoutes.route("/record/stats").get(function(req, res){
+recordRoutes.route("/record/stats").get(async function(req, res){
     let db_connect = dbo.getDB("statDatas");
-    db_connect.collection("statDatas").find({}).toArray(function(err, result){
-        if(err) throw err
-        res.json(result)
-    })
+    try {
+        const records = await db_connect
+          .collection("statDatas")
+          .find({})
+          .toArray();
+
+        res.json(records)
+    } catch (error) {
+        console.log("An error occurred pulling the stats records. " + error);
+    }
+    
 })
 
 // get a singl record by ID
-recordRoutes.route("/record/:id").get(function(req, res){
+recordRoutes.route("/record/:id").get(async function(req, res){
     let db_connect = dbo.getDB();
     let myQuery = { _id: ObjectId( req.params.id ) };
-    db_connect
-        .collection("records")
-        .findOne(myQuery, function(err, result){
-            if(err) throw err
-            res.json(result)
-        })
+    try {
+        const record = await db_connect
+          .collection("records")
+          .findOne(myQuery)
+        res.json(record)
+    } catch (error) {
+      console.log("An error occurred pulling the record. " + error);
+    }
 })
 
 // get a singl record by Name
-recordRoutes.route("/record/:name").get(function(req, res){
+recordRoutes.route("/record/:name").get(async function(req, res){
     let db_connect = dbo.getDB();
     let myQuery = { name: req.body.name };
-    db_connect
+    try {
+      const record = await db_connect
         .collection("records")
-        .findOne(myQuery, function(err, result){
-            if(err) throw err
-            res.json(result)
-        })
+        .findOne(myQuery)
+        res.json(record)
+    } catch (error) {
+      console.log("An error occurred pulling the record. " + error);
+    }
 })
 
 // create a new record
-recordRoutes.route("/record/add").post(function(req, res){
+recordRoutes.route("/record/add").post(async function(req, res){
     let db_connect = dbo.getDB();
     let totalAmount = 0;
     totalAmount = req.body.balance + totalAmount;
@@ -84,17 +109,18 @@ recordRoutes.route("/record/add").post(function(req, res){
       social: req.body.social,
       totalAmount: totalAmount,
     };
-    db_connect
+    try {
+      const record = await db_connect
         .collection("records")
-        .insertOne(newObj, function(err, result) {
-            if(err) throw err
-            console.log("1 record inserted");
-            res.json(result)
-        })
+        .insertOne(newObj)
+        res.json(record)
+    } catch (error) {
+      console.log("An error occurred pulling creating records. " + error);
+    }
 })
 
 // create a new statData
-recordRoutes.route("/record/stats/add").post(function(req, res){
+recordRoutes.route("/record/stats/add").post(async function(req, res){
     let db_connect = dbo.getDB()
     let newObj = {
       name: req.body.name,
@@ -102,14 +128,18 @@ recordRoutes.route("/record/stats/add").post(function(req, res){
       social: req.body.social,
       date: req.body.date,
     };
-    db_connect.collection("statDatas").insertOne(newObj, function(err, result){
-        if(err) throw err
-        res.json(result)
-    })
+    try {
+      const statData = await db_connect
+        .collection("statDatas")
+        .insertOne(newObj)
+        res.json(statData)
+    } catch (error) {
+      console.log("An error occurred creating the stats records. " + error);
+    }
 })
 
 // update a record
-recordRoutes.route("/update/:id").put(function(req, res){
+recordRoutes.route("/update/:id").put(async function(req, res){
     let db_connect = dbo.getDB();
     let myQuery = { _id:ObjectId( req.params.id ) };
     let newValues = {
@@ -144,35 +174,41 @@ recordRoutes.route("/update/:id").put(function(req, res){
         totalAmount: req.body.totalAmount,
       },
     };
-    db_connect
+    try {
+      const records = await db_connect
         .collection("records")
-        .updateOne(myQuery, newValues, function(err, result){
-            if(err) throw err
-            console.log("1 record updated!");
-            res.json(result);
-        })
+        .updateOne(myQuery, newValues)
+        res.json(records);
+    } catch (error) {
+      console.log("An error occurred creating the updating record. " + error);
+    }
 })
 
 // delete a record
-recordRoutes.route("/:id").delete(function(req, res) {
+recordRoutes.route("/:id").delete(async function(req, res) {
     let db_connect = dbo.getDB();
     let myQuery = { _id: ObjectId( req.params.id ) };
-    db_connect
+    try {
+      const record = await db_connect
         .collection("records")
-        .deleteOne(myQuery, function(err, result){
-            if(err) throw err
-            res.json(result)
-        })
+        .deleteOne(myQuery)
+        res.json(record)
+    } catch (error) {
+      console.log("An error occurred creating the deleting record. " + error);
+    }
+    
 })
 
 // delete a daily registration
-recordRoutes.route('/record/deleteAStat/:id').delete(function(req, res){
+recordRoutes.route('/record/deleteAStat/:id').delete(async function(req, res){
     let db_connect = dbo.getDB();
     let myQuery = { _id: ObjectId( req.params.id )};
-    db_connect.collection("statDatas").deleteOne(myQuery, function(err, result){
-        if(err) throw err
-        res.json(result)
-    })
+    try {
+      const record = await db_connect.collection("statDatas").deleteOne(myQuery)
+      res.json(record)
+    } catch (error) {
+      console.log("An error occurred creating the deleting daily record. " + error);
+    }
 })
 // delete all the daily registrations
 recordRoutes.route('/record/deleteAllStats').delete(function(req, res){
@@ -181,14 +217,15 @@ recordRoutes.route('/record/deleteAllStats').delete(function(req, res){
 })
 
 // save many records
-recordRoutes.route('/record/addAll').post(function (req, res) {
+recordRoutes.route('/record/addAll').post(async function (req, res) {
   let db_connect = dbo.getDB();
   
-  db_connect.collection('records').insertMany(data, function(err, result) {
-    if (err) throw err;
-    console.log('All records inserted');
-    res.json(result);
-  })
+  try {
+    const records = await db_connect.collection('records').insertMany(data)
+    res.json(records);
+  } catch (error) {
+    console.log("An error occurred creating the deleting daily record. " + error);
+  }
 
 });
 

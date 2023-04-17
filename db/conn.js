@@ -5,21 +5,22 @@ const client = new MongoClient(Db, {
     useUnifiedTopology: true,
 });
 
-var _db;
+let _db;
 
 module.exports = {
-    connectToServer: (callback) => {
-        client.connect((err, db) => {
-            //we verify if we have the db
-            if(db){
-                _db = db.db("mySecondDatabase");
-                console.log("Connected To MongoDB")
-            }
-            return callback(err);
-        });
+    connectToServer: async function (callback) {
+  
+      try {
+        await client.connect();
+      } catch (e) {
+        console.error(e);
+      }
+  
+      _db = client.db("mySecondDatabase");
+  
+      return (_db === undefined ? false : true);
     },
-
     getDB: function () {
-        return _db;
+      return _db;
     },
-};
+  };
