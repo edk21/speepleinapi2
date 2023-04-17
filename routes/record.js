@@ -1,7 +1,7 @@
 const express = require("express");
 const recordRoutes = express.Router();
 const dbo = require("../db/conn");
-const ObjectID = require("mongodb").ObjectID;
+const ObjectId = require("mongodb").ObjectId;
 const data = require("../data")
 
 //get All records
@@ -49,7 +49,7 @@ recordRoutes.route("/record/stats").get(async function(req, res){
 // get a singl record by ID
 recordRoutes.route("/record/:id").get(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectID();
+    let ObjectId = new ObjectId();
     let myQuery = { _id: ObjectId( req.params.id ) };
     try {
         const record = await db_connect
@@ -142,7 +142,7 @@ recordRoutes.route("/record/stats/add").post(async function(req, res){
 // update a record
 recordRoutes.route("/update/:id").put(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectID();
+    let ObjectId = new ObjectId();
     let myQuery = { _id:ObjectId( req.params.id ) };
     let newValues = {
       $set: {
@@ -189,7 +189,7 @@ recordRoutes.route("/update/:id").put(async function(req, res){
 // delete a record
 recordRoutes.route("/:id").delete(async function(req, res) {
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectID();
+    let ObjectId = new ObjectId();
     let myQuery = { _id: ObjectId( req.params.id ) };
     try {
       const record = await db_connect
@@ -205,7 +205,7 @@ recordRoutes.route("/:id").delete(async function(req, res) {
 // delete a daily registration
 recordRoutes.route('/record/deleteAStat/:id').delete(async function(req, res){
     let db_connect = dbo.getDB();
-    let ObjectId = new ObjectID();
+    let ObjectId = new ObjectId();
     let myQuery = { _id: ObjectId( req.params.id )};
     try {
       const record = await db_connect.collection("statDatas").deleteOne(myQuery)
