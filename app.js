@@ -22,8 +22,6 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => res.type('html').send(html));
 
 
-
-
 const html = `
 <!DOCTYPE html>
 <html>

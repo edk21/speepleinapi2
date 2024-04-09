@@ -3,6 +3,7 @@ const recordRoutes = express.Router();
 const dbo = require("../db/conn");
 const ObjectId = require("mongodb").ObjectId;
 const data = require("../data")
+const datas = require("../datas")
 
 //get All records
 // recordRoutes.route("/record").get(function(req, res){
@@ -64,7 +65,7 @@ recordRoutes.route("/record/:id").get(async function(req, res){
 // get a singl record by Name
 recordRoutes.route("/record/:name").get(async function(req, res){
     let db_connect = dbo.getDB();
-    let myQuery = { name: req.body.name };
+    let myQuery = { name: req.body.childName };
     try {
       const record = await db_connect
         .collection("records")
@@ -81,23 +82,27 @@ recordRoutes.route("/record/add").post(async function(req, res){
     let totalAmount = 0;
     totalAmount = req.body.balance + totalAmount;
     let newObj = {
-      surname: req.body.surname,
-      name: req.body.name,
-      dateOfBirth: req.body.dateOfBirth,
-      school: req.body.school,
-      level: req.body.level,
-      street: req.body.street,
-      postalCode: req.body.postalCode,
-      city: req.body.city,
-      contact1: req.body.contact1,
-      tel1: req.body.tel1,
-      parentSSN: req.body.parentSSN,
+      childName: req.body.childName,
+      childFamilieName: req.body.childFamilieName,
+      childDateOfBirth: req.body.childDateOfBirth,
+      childSchool: req.body.childSchool,
+      childLevel: req.body.childLevel,
+      childGender: req.body.childGender,
+      childPassport: req.body.childPassport,
+      streetAndHouseNumber: req.body.streetAndHouseNumber,
+      postalCodeAndCity: req.body.postalCodeAndCity,
+      parentName1: req.body.parentName1,
+      parentFamilieName1: req.body.parentFamilieName1,
+      parentTel1: req.body.parentTel1,
+      parentEmail1: req.body.parentEmail1,
       parentDOB: req.body.parentDOB,
+      parentName2: req.body.parentName2,
+      parentFamilieName2: req.body.parentFamilieName2,
+      parentTel2: req.body.parentTel2,
+      parentEmail2: req.body.parentEmail2,
+      parentSSN: req.body.parentSSN,
       childSSN: req.body.childSSN,
-      contact2: req.body.contact2,
-      tel2: req.body.tel2,
-      email: req.body.email,
-      allergies: req.body.allergies,
+      childAllergies: req.body.childAllergies,
       medicals: req.body.medicals,
       parentRemarks: req.body.parentRemarks,
       teamRemarks: req.body.teamRemarks,
@@ -116,7 +121,7 @@ recordRoutes.route("/record/add").post(async function(req, res){
         .insertOne(newObj)
         res.json(record)
     } catch (error) {
-      console.log("An error occurred pulling creating records. " + error);
+      console.log("An error occurred creating the record. " + error);
     }
 })
 
@@ -146,23 +151,27 @@ recordRoutes.route("/update/:id").put(async function(req, res){
     let myQuery = { _id: new ObjectId( req.params.id ) };
     let newValues = {
       $set: {
-        surname: req.body.surname,
-        name: req.body.name,
-        dateOfBirth: req.body.dateOfBirth,
-        school: req.body.school,
-        level: req.body.level,
-        street: req.body.street,
-        postalCode: req.body.postalCode,
-        city: req.body.city,
-        contact1: req.body.contact1,
-        tel1: req.body.tel1,
-        contact2: req.body.contact2,
-        tel2: req.body.tel2,
-        parentSSN: req.body.parentSSN,
+        childName: req.body.childName,
+        childFamilieName: req.body.childFamilieName,
+        childDateOfBirth: req.body.childDateOfBirth,
+        childSchool: req.body.childSchool,
+        childLevel: req.body.childLevel,
+        childGender: req.body.childGender,
+        childPassport: req.body.childPassport,
+        streetAndHouseNumber: req.body.streetAndHouseNumber,
+        postalCodeAndCity: req.body.postalCodeAndCity,
+        parentName1: req.body.parentName1,
+        parentFamilieName1: req.body.parentFamilieName1,
+        parentTel1: req.body.parentTel1,
+        parentEmail1: req.body.parentEmail1,
         parentDOB: req.body.parentDOB,
+        parentName2: req.body.parentName2,
+        parentFamilieName2: req.body.parentFamilieName2,
+        parentTel2: req.body.parentTel2,
+        parentEmail2: req.body.parentEmail2,
+        parentSSN: req.body.parentSSN,
         childSSN: req.body.childSSN,
-        email: req.body.email,
-        allergies: req.body.allergies,
+        childAllergies: req.body.childAllergies,
         medicals: req.body.medicals,
         parentRemarks: req.body.parentRemarks,
         teamRemarks: req.body.teamRemarks,
@@ -182,7 +191,7 @@ recordRoutes.route("/update/:id").put(async function(req, res){
         .updateOne(myQuery, newValues)
         res.json(records);
     } catch (error) {
-      console.log("An error occurred creating the updating record. " + error);
+      console.log("An error occurred updating the record. " + error);
     }
 })
 
@@ -197,7 +206,7 @@ recordRoutes.route("/:id").delete(async function(req, res) {
         .deleteOne(myQuery)
         res.json(record)
     } catch (error) {
-      console.log("An error occurred creating the deleting record. " + error);
+      console.log("An error occurred deleting the record. " + error);
     }
     
 })
@@ -211,7 +220,7 @@ recordRoutes.route('/record/deleteAStat/:id').delete(async function(req, res){
       const record = await db_connect.collection("statDatas").deleteOne(myQuery)
       res.json(record)
     } catch (error) {
-      console.log("An error occurred creating the deleting daily record. " + error);
+      console.log("An error occurred deleting a daily record. " + error);
     }
 })
 // delete all the daily registrations
@@ -225,10 +234,10 @@ recordRoutes.route('/record/addAll').post(async function (req, res) {
   let db_connect = dbo.getDB();
   
   try {
-    const records = await db_connect.collection('records').insertMany(data)
+    const records = await db_connect.collection('records').insertMany(datas)
     res.json(records);
   } catch (error) {
-    console.log("An error occurred creating the deleting daily record. " + error);
+    console.log("An error occurred saving all the records. " + error);
   }
 
 });
